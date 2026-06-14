@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="板金積算">
+<meta name="theme-color" content="#1e3a6e">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI+CiAgPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHJ4PSI0MCIgZmlsbD0iIzFlM2E2ZSIvPgogIDx0ZXh0IHg9Ijk2IiB5PSIxMzAiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMTAiIGZvbnQtd2VpZ2h0PSI3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj5IPC90ZXh0PgogIDx0ZXh0IHg9Ijk2IiB5PSIxNzAiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9IjYwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzkzYzVmZCI+56mN566XPC90ZXh0Pgo8L3N2Zz4=">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI+CiAgPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHJ4PSI0MCIgZmlsbD0iIzFlM2E2ZSIvPgogIDx0ZXh0IHg9Ijk2IiB5PSIxMzAiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMTAiIGZvbnQtd2VpZ2h0PSI3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj5IPC90ZXh0PgogIDx0ZXh0IHg9Ijk2IiB5PSIxNzAiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9IjYwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzkzYzVmZCI+56mN566XPC90ZXh0Pgo8L3N2Zz4=">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>板金積算｜株式会社ひかり</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Hiragino Sans','Meiryo',system-ui,sans-serif;background:#f0f4f8;color:#1e293b;font-size:16px;overscroll-behavior:none}
+
+/* ===== ヘッダー ===== */
+.hdr{background:linear-gradient(135deg,#1e3a6e,#2563eb);color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.hdr-left .title{font-size:17px;font-weight:700}
+.hdr-left .sub{font-size:12px;opacity:.7;margin-top:1px}
+.hdr-right .lbl{font-size:12px;opacity:.7;text-align:right}
+.hdr-right .val{font-size:22px;font-weight:700;line-height:1}
+
+/* ===== 案件バー ===== */
+.proj-bar{background:#fff;border-bottom:1px solid #e2e8f0;padding:6px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.proj-bar label{font-size:13px;color:#64748b;font-weight:600;white-space:nowrap}
+.proj-bar input{border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:15px;flex:1;min-width:120px;max-width:200px}
+
+/* ===== メインコンテンツ ===== */
+.content{padding-bottom:70px;min-height:calc(100vh - 100px)}
+
+/* ===== 下部タブバー（スマホ） ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;z-index:200;box-shadow:0 -2px 8px rgba(0,0,0,.1)}
+.nav-btn{flex:1;padding:8px 4px 10px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:12px;font-weight:600;transition:color .1s}
+.nav-btn.on{color:#2563eb}
+.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn .badge{background:#2563eb;color:#fff;font-size:11px;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center}
+
+/* ===== ページ（タブ切替） ===== */
+.page{display:none;padding:0}
+.page.on{display:block}
+
+/* ===== 品目一覧ページ ===== */
+.page-items{padding:10px}
+.items-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.items-toolbar span{font-size:14px;font-weight:700;color:#475569}
+.item-card{background:#fff;border-radius:10px;border:1.5px solid #e2e8f0;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .12s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.item-card.active{border-color:#2563eb;background:#eff6ff}
+.item-card-row1{display:flex;justify-content:space-between;align-items:flex-start}
+.item-card-name{font-size:16px;font-weight:700;color:#1e3a6e}
+.item-card.active .item-card-name{color:#1d4ed8}
+.item-card-price{font-size:17px;font-weight:700;color:#0f766e}
+.item-card-meta{font-size:13px;color:#94a3b8;margin-top:3px}
+.item-card-actions{display:flex;gap:6px;margin-top:8px}
+
+/* ===== 入力ページ ===== */
+.page-form{padding:10px}
+.form-nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px;scrollbar-width:none}
+.form-nav::-webkit-scrollbar{display:none}
+.form-nav-btn{padding:5px 12px;border-radius:16px;border:1.5px solid;cursor:pointer;font-size:14px;font-weight:600;white-space:nowrap;transition:all .1s;flex-shrink:0}
+.section{background:#fff;border-radius:10px;border:1.5px solid;margin-bottom:10px;overflow:hidden}
+.sec-hdr{padding:10px 14px;font-size:14px;font-weight:700;color:#fff;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.sec-hdr .arrow{transition:transform .2s;font-size:16px}
+.sec-hdr.collapsed .arrow{transform:rotate(-90deg)}
+.sec-body{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sec-body.one{grid-template-columns:1fr}
+.sec-body.three{grid-template-columns:1fr 1fr 1fr}
+.sec-body.collapsed{display:none}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:13px;color:#64748b;font-weight:600}
+.fld input,.fld select{padding:9px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:17px;width:100%;background:#fff;color:#1e293b;-webkit-appearance:none}
+.fld input:focus,.fld select:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.fld input.hl,.fld select.hl{background:#fefce8;border-color:#f59e0b}
+.fld input.hl:focus,.fld select.hl:focus{border-color:#d97706;box-shadow:0 0 0 3px rgba(245,158,11,.1)}
+.cb-row{display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;font-size:16px}
+.cb-row input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:#2563eb;flex-shrink:0}
+
+/* ===== 計算結果ページ ===== */
+.page-result{padding:10px}
+.res-card{background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.res-card-title{font-size:14px;font-weight:700;color:#475569;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f1f5f9}
+.res-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f8fafc;font-size:15px}
+.res-row .lbl{color:#64748b}
+.res-row .val{font-weight:500}
+.res-proc-total{background:#eff6ff;border-radius:7px;padding:6px 10px;margin:6px 0;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:#0369a1}
+.res-total-card{background:linear-gradient(135deg,#1e3a6e,#2563eb);color:#fff;border-radius:12px;padding:16px;margin-bottom:10px}
+.res-total-card .lbl{font-size:13px;opacity:.8}
+.res-total-card .val{font-size:20px;font-weight:700;margin-top:2px}
+.res-total-card .val-lg{font-size:26px;font-weight:700;margin-top:2px}
+.res-unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.3)}
+.res-unit-grid .lbl{font-size:12px;opacity:.8}
+.res-unit-grid .val{font-size:17px;font-weight:700;margin-top:2px}
+.res-meta{background:#f8fafc;border-radius:8px;padding:10px 12px;font-size:14px;color:#94a3b8;line-height:2}
+
+/* ===== サマリーページ ===== */
+.page-summary{padding:10px}
+.summary-card{background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.summary-card-title{font-size:15px;font-weight:700;color:#1e3a6e;margin-bottom:10px}
+.grp-item{border:1.5px solid #ede9fe;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.grp-name{font-size:15px;font-weight:700;color:#6d28d9;margin-bottom:4px}
+.grp-parts{font-size:13px;color:#94a3b8;margin-bottom:6px}
+.grp-total{font-size:19px;font-weight:700;color:#0f766e}
+.detail-row{padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.detail-row:last-child{border-bottom:none}
+.detail-row-top{display:flex;justify-content:space-between;align-items:center}
+.detail-row-name{font-size:15px;font-weight:700}
+.detail-row-price{font-size:16px;font-weight:700;color:#0f766e}
+.detail-row-sub{font-size:13px;color:#94a3b8;margin-top:2px}
+.grand-total-card{background:linear-gradient(135deg,#1e3a6e,#2563eb);color:#fff;border-radius:12px;padding:16px;margin-bottom:10px;text-align:center}
+.grand-total-card .lbl{font-size:14px;opacity:.8}
+.grand-total-card .val{font-size:30px;font-weight:700;margin-top:4px}
+
+/* ===== ボタン ===== */
+.btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:700;transition:all .1s}
+.btn-blue{background:#2563eb;color:#fff}
+.btn-blue:active{background:#1d4ed8}
+.btn-gray{background:#f1f5f9;color:#475569;border:1.5px solid #e2e8f0}
+.btn-gray:active{background:#e2e8f0}
+.btn-red{background:#fee2e2;color:#dc2626;border:1.5px solid #fca5a5}
+.btn-red:active{background:#fecaca}
+.btn-lg{padding:12px 20px;font-size:17px;border-radius:10px;width:100%}
+
+/* ===== トースト ===== */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e3a6e;color:#fff;padding:8px 20px;border-radius:20px;font-size:15px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ===== サマリー スライドパネル ===== */
+.summary-panel{position:fixed;top:0;right:0;width:420px;max-width:95vw;height:100vh;background:#fff;box-shadow:-4px 0 20px rgba(0,0,0,.15);z-index:500;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.summary-panel.open{transform:translateX(0)}
+.summary-panel-hdr{background:linear-gradient(135deg,#1e3a6e,#2563eb);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.summary-panel-hdr .title{font-size:15px;font-weight:700}
+.summary-panel-hdr .close-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.summary-panel-body{padding:12px}
+
+/* ===== PCレイアウト（768px以上） ===== */
+@media(min-width:768px){
+  .bottom-nav{display:none}
+  .content{padding-bottom:0;display:grid;grid-template-columns:220px 1fr 210px;gap:0;height:calc(100vh - 96px);overflow:hidden}
+  .page{display:block;overflow-y:auto;height:100%;border-right:1px solid #e2e8f0}
+  .page-items{padding:10px}
+  .page-form{padding:10px}
+  .page-result{padding:10px}
+  .page-summary{display:none;grid-column:1/3;border-right:1px solid #e2e8f0}
+  .sec-body{grid-template-columns:1fr 1fr}
+  .proj-bar input{max-width:240px}
+  .pc-summary-tab{display:flex!important}
+}
+.pc-summary-tab{display:none;gap:4px;padding:6px 12px;background:#f0f4f8;border-bottom:1px solid #e2e8f0}
+.pc-tab-btn{padding:5px 16px;border-radius:6px 6px 0 0;border:none;cursor:pointer;font-size:14px;font-weight:600}
+.pc-tab-btn.on{background:#2563eb;color:#fff}
+.pc-tab-btn.off{background:#e2e8f0;color:#64748b}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="title">板金積算アプリ</div>
+    <div class="sub">ES-V7方式 ／ 株式会社ひかり</div>
+  </div>
+  <div class="hdr-right">
+    <div class="lbl">見積合計</div>
+    <div class="val" id="grand-total">¥0</div>
+  </div>
+</div>
+
+<div class="proj-bar">
+  <label>案件名</label>
+  <input type="text" id="project-name" placeholder="案件名を入力..." oninput="saveData()">
+  <label>日付</label>
+  <input type="date" id="project-date" oninput="saveData()" style="max-width:140px">
+</div>
+
+<div class="pc-summary-tab">
+  <button class="pc-tab-btn on" onclick="pcTab('main')">入力・計算</button>
+  <button class="pc-tab-btn off" onclick="pcTab('summary')">見積サマリー</button>
+</div>
+
+<div class="content">
+
+  <!-- 品目一覧 -->
+  <div class="page page-items on" id="page-items">
+    <div class="items-toolbar">
+      <span id="item-count">品目一覧</span>
+      <button class="btn btn-blue" onclick="addItem()">＋ 品目追加</button>
+    </div>
+    <div id="item-list"></div>
+  </div>
+
+  <!-- 入力フォーム -->
+  <div class="page page-form" id="page-form">
+    <div class="form-nav" id="form-nav"></div>
+    <div id="form-body"></div>
+  </div>
+
+  <!-- 計算結果 -->
+  <div class="page page-result" id="page-result">
+    <div id="result-body"></div>
+  </div>
+
+  <!-- サマリー（スマホ専用ページ） -->
+  <div class="page page-summary" id="page-summary">
+    <div id="summary-body"></div>
+  </div>
+
+</div>
+
+<!-- 下部タブバー（スマホ） -->
+<div class="bottom-nav">
+  <button class="nav-btn on" id="nav-items" onclick="navTo('items')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    品目
+  </button>
+  <button class="nav-btn" id="nav-form" onclick="navTo('form')">
+    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    入力
+  </button>
+  <button class="nav-btn" id="nav-result" onclick="navTo('result')">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    結果
+  </button>
+  <button class="nav-btn" id="nav-summary" onclick="navTo('summary')">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    サマリー
+  </button>
+</div>
+
+<div class="toast" id="toast">保存しました</div>
+
+<!-- サマリー用スライドパネル -->
+<div class="summary-panel" id="summary-panel">
+  <div class="summary-panel-hdr">
+    <div class="title" id="summary-panel-title">入力フォーム</div>
+    <button class="close-btn" onclick="closeSummaryPanel()">×</button>
+  </div>
+  <div class="summary-panel-body" id="summary-panel-body"></div>
+</div>
+
+<script>
+// ===== ES-V7 計算エンジン =====
+function calcItem(p){
+  const mat=p.material||'SUS', W=(+p.width_mm||0)/1000, L=(+p.length_mm||0)/1000, t=+p.thickness||0;
+  const density=mat==='SUS'?7930:mat==='鉄'?7890:mat==='AL'?2700:7930; // kg/m³
+  const area=W*L, weight=area*(t/1000)*density; // m²×m×kg/m³=kg
+  const mat_cost=Math.max(weight*(+p.yield_rate||1.4)*(+p.mat_price||0)*1.25, weight>0&&+p.mat_price>0?40:0);
+  const outer=(W+L)*2;
+  const cut_rate=mat==='SUS'||mat==='AL'?210:110;
+  const cut_total=outer*t*cut_rate + outer*t*80;
+  function hole(d,c,df){if(!+c)return 0;return Math.max(Math.ceil(+d*3.14*1.0*df)*+c,40);}
+  const hole_total=hole(p.hole1_dia||6,p.hole1_cnt,1)+hole(p.hole2_dia||6,p.hole2_cnt,1)
+    +hole(p.tap_dia||6,p.tap_cnt,3.1)+hole(p.sara_dia||6,p.sara_cnt,2)+hole(p.long_dia||6,p.long_cnt,2);
+  function br(m,th){if(m==='SUS')return th<=1.5?315:th<=2?420:th<=2.5?525:th<=3?630:th<=4?840:th<=5?1050:1890;if(m==='AL')return th<=2?220:th<=3?370:th<=4?590:740;return 220;}
+  const bend_total=(+p.bend_L||0)*L*t*br(mat,t)+(+p.bend_W||0)*W*t*br(mat,t)+(+p.bend_sharp||0)*L*t*br(mat,t)*2;
+  function wS(m,th){return m==='鉄'?(th<=1.5?32:th<=2?42:th<=2.5?53:th<=3?63:th<=4?84:105):(th<=1.6?38:th<=2.3?44:th<=3.2?51:th<=4.5?72:th<=6?96:144);}
+  function wL(m,th){return m==='鉄'?(th<=1.5?529:th<=2?706:th<=2.5?882:th<=3?1058:th<=4?1411:th<=5?1764:3175):(th<=1.6?2880:th<=2.3?2990:3152);}
+  function wA(m,th){return m==='鉄'?(th<=1.5?529:th<=2?706:th<=2.5?882:1058):(th<=1.6?307:th<=2.3?353:th<=3.2?410:th<=4.5?576:th<=6?768:th<=9?1152:1536);}
+  const weld_total=
+    (+p.weld_spot?((+p.spot||0)*wS(mat,t)):0)+
+    (+p.weld_tigL?(((W+L)*2*(+p.tigL_pct||100)/100)*0.2*wL(mat,t)):0)+
+    (+p.weld_tigX?((W*(+p.tigX_pct||100)/100)*2*3175):0)+
+    (+p.weld_arc?((+p.arc||0)*wA(mat,t)):0)+
+    (+p.weld_bead?((+p.bead||0)*wA(mat,t)*1.2):0);
+  const other_total=weight*64+area*1000;
+  const mekki=+p.mekki?Math.max(weight*330*1.5,40):0;
+  // アルマイト・クリアー・養生 それぞれ独立ON/OFF＋片面/両面
+  function calcSurface(onFlag, typeKey, sideKey, priceMap){
+    if(!+onFlag) return 0;
+    const key=typeKey||Object.keys(priceMap)[0];
+    const unit=priceMap[key]||0;
+    const isDouble=(sideKey||'s')==='d';
+    const a=isDouble?area*2:area;
+    const u=a<=0.1?Math.round(unit*1.2):unit;
+    return Math.max(a*u*1.5, 40);
+  }
+  const ALM_PRICE  ={s:1914,b:4000,c:3600};
+  const CLEAR_PRICE={s:1987};
+  const YOJO_PRICE ={s:792};
+  const alm_cost  =calcSurface(p.alm_on,  p.alm_color, p.alm_side,   ALM_PRICE);
+  const clear_cost=calcSurface(p.clear_on, null,        p.clear_side,  CLEAR_PRICE);
+  const yojo_cost =calcSurface(p.yojo_on,  null,        p.yojo_side,   YOJO_PRICE);
+  const alm=alm_cost+clear_cost+yojo_cost;
+  const yaki=+p.yaki?Math.max(area*6000*1.5,40):0;
+  const out_total=mekki+alm+yaki;
+  const proc=cut_total+hole_total+bend_total+weld_total+other_total+out_total;
+  const cost_per=mat_cost+proc, est_per=Math.round(cost_per*1.15), qty=+p.qty||1;
+  return{material_cost:Math.round(mat_cost),cut_total:Math.round(cut_total),hole_total:Math.round(hole_total),
+    bend_total:Math.round(bend_total),weld_total:Math.round(weld_total),other_total:Math.round(other_total),
+    out_total:Math.round(out_total),proc_total:Math.round(proc),cost_per:Math.round(cost_per),
+    est_per,est_total:est_per*qty,qty,weight:Math.round(weight*100)/100,area:Math.round(area*10000)/10000};
+}
+
+const yen=v=>v?'¥'+Math.round(v).toLocaleString():'—';
+let items=[],active=0,uid=1,currentNav='items',pcMainTab='main';
+const SK='hikari_bankin_v2';
+
+function def(n){return{id:uid++,name:'品目'+String(n).padStart(2,'0'),material:'SUS',
+  width_mm:0,length_mm:0,thickness:1.6,yield_rate:1.4,mat_price:0,qty:1,parts_per:1,group:'',
+  hole1_dia:6,hole1_cnt:0,hole2_dia:6,hole2_cnt:0,tap_dia:6,tap_cnt:0,sara_dia:6,sara_cnt:0,long_dia:6,long_cnt:0,
+  bend_L:0,bend_W:0,bend_sharp:0,spot:0,weld_spot:0,tigL_pct:100,weld_tigL:0,tigX_pct:100,weld_tigX:0,arc:0,weld_arc:0,bead:0,weld_bead:0,
+  mekki:0,
+  alm_on:0,alm_color:'s',alm_side:'s',
+  clear_on:0,clear_side:'s',
+  yojo_on:0,yojo_side:'s',
+  yaki:0};}
+
+function saveData(){
+  localStorage.setItem(SK,JSON.stringify({items,active,
+    project:document.getElementById('project-name').value,
+    date:document.getElementById('project-date').value}));
+  showToast();
+}
+function loadData(){
+  const raw=localStorage.getItem(SK);
+  if(raw){try{const d=JSON.parse(raw);items=d.items||[def(1)];active=d.active||0;
+    uid=Math.max(...items.map(x=>x.id))+1;
+    document.getElementById('project-name').value=d.project||'';
+    document.getElementById('project-date').value=d.date||'';return;}catch(e){}}
+  items=[def(1)];active=0;
+  document.getElementById('project-date').value=new Date().toISOString().slice(0,10);
+}
+let toastT;
+function showToast(){const t=document.getElementById('toast');t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1500);}
+
+// ===== ナビゲーション =====
+function navTo(pg){
+  currentNav=pg;
+  ['items','form','result','summary'].forEach(p=>{
+    document.getElementById('page-'+p).classList.toggle('on',p===pg);
+    document.getElementById('nav-'+p).classList.toggle('on',p===pg);
+  });
+  if(pg==='summary') buildSummary();
+}
+function pcTab(t){
+  pcMainTab=t;
+  document.querySelectorAll('.pc-tab-btn').forEach((b,i)=>b.className='pc-tab-btn '+(i===(t==='main'?0:1)?'on':'off'));
+  const isSummary=t==='summary';
+  ['page-items','page-form','page-result'].forEach(id=>{
+    document.getElementById(id).style.display=isSummary?'none':'';
+  });
+  const ps=document.getElementById('page-summary');
+  ps.style.display=isSummary?'block':'none';
+  // 入力シートに戻ったらサマリーパネルを閉じる
+  if(!isSummary) document.getElementById('summary-panel').classList.remove('open');
+  // サマリータブ時は案件バー（基本情報）を非表示
+  document.querySelector('.proj-bar').style.display=isSummary?'none':'';
+  if(isSummary) buildSummary();
+}
+
+// ===== 品目一覧 =====
+function buildItemList(){
+  const results=items.map(calcItem);
+  const grand=results.reduce((s,r)=>s+r.est_total,0);
+  document.getElementById('grand-total').textContent='¥'+grand.toLocaleString();
+  document.getElementById('item-count').textContent=`品目一覧（${items.length}件）`;
+  document.getElementById('item-list').innerHTML=items.map((it,i)=>`
+    <div class="item-card${i===active?' active':''}" onclick="selectItem(${i})">
+      <div class="item-card-row1">
+        <div class="item-card-name">${it.name||'品目'+(i+1)}</div>
+        <div class="item-card-price">${yen(results[i].est_total)}</div>
+      </div>
+      <div class="item-card-meta">${it.material} / ${it.thickness}mm / ${it.qty}本${it.group?' 【'+it.group+'】':''}</div>
+      <div class="item-card-actions">
+        <button class="btn btn-blue" onclick="event.stopPropagation();selectItem(${i});navTo('form')">入力</button>
+        <button class="btn btn-gray" onclick="event.stopPropagation();selectItem(${i});navTo('result')">結果</button>
+        <button class="btn btn-gray" onclick="event.stopPropagation();copyItem(${i})">複製</button>
+        <button class="btn btn-red"  onclick="event.stopPropagation();removeItem(${i})">削除</button>
+      </div>
+    </div>`).join('');
+}
+
+function selectItem(i){active=i;buildItemList();buildForm();buildResult();}
+
+// ===== 入力フォーム =====
+const SECTIONS=[
+  {id:'basic', label:'基本情報', color:'#1e3a6e'},
+  {id:'hole',  label:'穴加工',   color:'#0369a1'},
+  {id:'bend',  label:'曲げ',     color:'#6d28d9'},
+  {id:'weld',  label:'溶接',     color:'#92400e'},
+  {id:'out',   label:'外注',     color:'#065f46'},
+];
+let openSec='basic';
+function toggleSec(id){openSec=openSec===id?null:id;buildForm();}
+
+function fld(label,key,hl,type='number',step='any'){
+  const v=items[active][key]??'';
+  return `<div class="fld"><label>${label}</label>
+    <input type="${type}" value="${v}" ${hl?'class="hl"':''} step="${step}" min="0"
+      oninput="upd('${key}',this.value)" inputmode="${type==='number'?'decimal':'text'}">
+  </div>`;}
+function selFld(label,key,opts,hl){
+  const v=items[active][key]||opts[0];
+  return `<div class="fld"><label>${label}</label><select class="${hl?'hl':''}" onchange="upd('${key}',this.value)">${opts.map(o=>`<option${v===o?' selected':''}>${o}</option>`).join('')}</select></div>`;}
+function cbFld(key,label){
+  return `<label class="cb-row"><input type="checkbox" ${items[active][key]?'checked':''} onchange="upd('${key}',this.checked?1:0)"><span>${label}</span></label>`;}
+
+function weldRow(onKey, valKey, label, unit, isCoeff, step){
+  const it=items[active];
+  const isOn=!!it[onKey];
+  const val=it[valKey]??'';
+  const defaultVal=isCoeff?100:0;
+  return `<div style="background:${isOn?'#fefce8':'#f8fafc'};border:1.5px solid ${isOn?'#f59e0b':'#e2e8f0'};border-radius:8px;padding:8px;transition:all .2s">
+    <label class="cb-row" style="padding:0 0 6px;font-size:14px;font-weight:700;color:${isOn?'#92400e':'#94a3b8'}">
+      <input type="checkbox" ${isOn?'checked':''} onchange="updWeld('${onKey}','${valKey}',this.checked,${defaultVal})" style="width:18px;height:18px;accent-color:#f59e0b">
+      <span>${label}</span>
+      <span style="font-size:12px;font-weight:400;margin-left:4px;opacity:.7">${unit}</span>
+    </label>
+    ${isOn?`<input type="number" value="${val}" class="hl" step="${step||'any'}" min="0"
+      style="width:100%;padding:7px 8px;border:1.5px solid #f59e0b;border-radius:6px;font-size:17px;background:#fff"
+      oninput="upd('${valKey}',this.value)" inputmode="decimal">`
+    :`<div style="font-size:14px;color:#cbd5e1;text-align:center;padding:4px">OFF</div>`}
+  </div>`;
+}
+window.updWeld=function(onKey,valKey,checked,defaultVal){
+  items[active][onKey]=checked?1:0;
+  if(checked && !items[active][valKey]) items[active][valKey]=defaultVal;
+  buildForm();buildItemList();buildResult();saveData();
+};
+window.updSurf=function(onKey,checked){
+  items[active][onKey]=checked?1:0;
+  buildForm();buildItemList();buildResult();saveData();
+};
+
+function buildForm(){
+  if(!items.length)return;
+  // セクションナビ
+  document.getElementById('form-nav').innerHTML=SECTIONS.map(s=>
+    `<button class="form-nav-btn" style="border-color:${s.color};background:${openSec===s.id?s.color:'#fff'};color:${openSec===s.id?'#fff':s.color}" onclick="toggleSec('${s.id}')">${s.label}</button>`
+  ).join('');
+  // フォーム本体
+  const it=items[active];
+  // 表面処理行ビルダー（溶接行と同スタイル）
+  function surfRow(onKey, label, priceNote, extraSel){
+    const isOn=!!it[onKey];
+    return `<div style="background:${isOn?'#f0fdf4':'#f8fafc'};border:1.5px solid ${isOn?'#16a34a':'#e2e8f0'};border-radius:8px;padding:8px;transition:all .2s">
+      <label class="cb-row" style="padding:0 0 ${isOn?'6px':'0'};font-size:14px;font-weight:700;color:${isOn?'#065f46':'#94a3b8'}">
+        <input type="checkbox" ${isOn?'checked':''} onchange="updSurf('${onKey}',this.checked)" style="width:18px;height:18px;accent-color:#16a34a;flex-shrink:0">
+        <span>${label}</span>
+        <span style="font-size:12px;font-weight:400;margin-left:4px;opacity:.7">${priceNote}</span>
+      </label>
+      ${isOn?`<div style="display:flex;gap:6px;flex-wrap:wrap">${extraSel}</div>`
+      :`<div style="font-size:14px;color:#cbd5e1;text-align:center;padding:2px">OFF</div>`}
+    </div>`;
+  }
+  function sideSelect(key, val){
+    return `<select onchange="upd('${key}',this.value)" style="flex:1;padding:6px 8px;border:1.5px solid #16a34a;border-radius:6px;font-size:15px;background:#fff">
+      <option value="s" ${val==='s'?'selected':''}>片面</option>
+      <option value="d" ${val==='d'?'selected':''}>両面</option>
+    </select>`;
+  }
+  const almSel_html = surfRow('alm_on','アルマイト','¥/㎡×1.5',
+    `<select onchange="upd('alm_color',this.value)" style="flex:1;padding:6px 8px;border:1.5px solid #16a34a;border-radius:6px;font-size:15px;background:#fff">
+      <option value="s" ${it.alm_color==='s'?'selected':''}>シルバー ¥1,914</option>
+      <option value="b" ${it.alm_color==='b'?'selected':''}>ブラック ¥4,000</option>
+      <option value="c" ${it.alm_color==='c'?'selected':''}>カラー ¥3,600</option>
+    </select>${sideSelect('alm_side',it.alm_side)}`
+  );
+  const clearSel_html= surfRow('clear_on','クリアー','¥1,987/㎡×1.5', sideSelect('clear_side',it.clear_side));
+  const yojoSel_html = surfRow('yojo_on','養生','¥792/㎡×1.5',       sideSelect('yojo_side', it.yojo_side));
+  const secBody={
+    basic:`<div class="fld full"><label>品名</label><input type="text" value="${it.name||''}" oninput="upd('name',this.value)" inputmode="text"></div>
+      ${selFld('材質','material',['SUS','鉄','AL'],true)}
+      ${fld('板厚 (mm)','thickness',true,'number',0.1)}
+      ${fld('糸幅 (mm)','width_mm',true,'number',0.1)}
+      ${fld('L寸 (mm)','length_mm',true,'number',0.1)}
+      ${fld('歩留まり','yield_rate',true,'number',0.01)}
+      ${fld('材料単価 (円/kg)','mat_price',true)}
+      ${fld('製品数量 (本)','qty',true,'number',1)}
+      ${fld('パーツ数/製品','parts_per',true,'number',1)}
+      <div class="fld full"><label>グループ名</label><input type="text" class="hl" value="${it.group||''}" oninput="upd('group',this.value)" placeholder="例：組立A" inputmode="text"></div>`,
+    hole:`${fld('丸穴① 径(mm)','hole1_dia')} ${fld('丸穴① 個数','hole1_cnt',true)}
+      ${fld('丸穴② 径(mm)','hole2_dia')} ${fld('丸穴② 個数','hole2_cnt',true)}
+      ${fld('タップ 径(mm)','tap_dia')}   ${fld('タップ 個数','tap_cnt',true)}
+      ${fld('皿穴 径(mm)','sara_dia')}    ${fld('皿穴 個数','sara_cnt',true)}
+      ${fld('長穴 径(mm)','long_dia')}    ${fld('長穴 個数','long_cnt',true)}`,
+    bend:`${fld('L方向 角数','bend_L',true)} ${fld('糸幅方向 角数','bend_W',true)}
+      <div class="fld full">${fld('鋭角・ヘミング 角数','bend_sharp',true)}</div>`,
+    weld:`
+      <div class="fld full" style="grid-column:1/-1">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          ${weldRow('weld_spot','spot','点溶接','打点数',false)}
+          ${weldRow('weld_tigL','tigL_pct','TigL','係数(%)' ,true)}
+          ${weldRow('weld_tigX','tigX_pct','Tig断面','係数(%)',true)}
+          ${weldRow('weld_arc','arc','アーク溶接','溶接長(m)',false,0.01)}
+          ${weldRow('weld_bead','bead','ビード仕上','長さ(m)',false,0.01)}
+        </div>
+      </div>`,
+    out:`<div class="sec-body one" style="padding:0">
+      ${cbFld('mekki','メッキ')}
+      <div style="margin:4px 0;font-size:13px;font-weight:700;color:#065f46">表面処理（複数選択可）</div>
+      ${almSel_html}
+      ${clearSel_html}
+      ${yojoSel_html}
+      ${cbFld('yaki','焼き付け塗装')}
+    </div>`,
+  };
+  document.getElementById('form-body').innerHTML=SECTIONS.map(s=>{
+    const isOpen=openSec===s.id;
+    return `<div class="section" style="border-color:${s.color}">
+      <div class="sec-hdr${isOpen?'':' collapsed'}" style="background:${s.color}" onclick="toggleSec('${s.id}')">
+        ${s.label}<span class="arrow">▾</span>
+      </div>
+      <div class="sec-body${isOpen?'':' collapsed'}">${secBody[s.id]}</div>
+    </div>`;
+  }).join('')+`<div style="height:10px"></div>`;
+}
+
+// ===== 計算結果 =====
+function buildResult(){
+  if(!items.length)return;
+  const r=calcItem(items[active]);
+  document.getElementById('result-body').innerHTML=`
+    <div class="res-total-card">
+      <div class="lbl">見積単価（1本）</div>
+      <div class="val">${yen(r.est_per)}</div>
+      <div class="lbl" style="margin-top:10px">見積合計（${r.qty}本）</div>
+      <div class="val-lg">${yen(r.est_total)}</div>
+      <div class="res-unit-grid">
+        <div><div class="lbl">㎡単価</div><div class="val">${r.area>0?'¥'+Math.round(r.est_per/r.area).toLocaleString():'—'}</div></div>
+        <div><div class="lbl">キロ単価</div><div class="val">${r.weight>0?'¥'+Math.round(r.est_per/r.weight).toLocaleString():'—'}</div></div>
+      </div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-title">原価内訳</div>
+      ${[['材料費',r.material_cost],['外周切断費',r.cut_total],['穴加工費',r.hole_total],
+         ['曲げ費',r.bend_total],['溶接費',r.weld_total],['取扱・養生費',r.other_total],['外注費',r.out_total]]
+        .map(([l,v])=>`<div class="res-row"><span class="lbl">${l}</span><span class="val">${yen(v)}</span></div>`).join('')}
+      <div class="res-proc-total"><span>加工費合計</span><span>${yen(r.proc_total)}</span></div>
+      <div class="res-row" style="border-top:2px solid #334155;margin-top:4px;padding-top:8px">
+        <span class="lbl" style="font-weight:700">原価合計</span><span class="val" style="font-weight:700">${yen(r.cost_per)}</span></div>
+      <div class="res-row"><span class="lbl">管理費・利益(15%)</span><span class="val">${yen(r.est_per-r.cost_per)}</span></div>
+    </div>
+    <div class="res-meta">重量：${r.weight} kg　／　面積：${r.area} ㎡</div>
+    <div style="height:10px"></div>`;
+}
+
+// ===== サマリー =====
+function buildSummary(){
+  const results=items.map(calcItem);
+  const grand=results.reduce((s,r)=>s+r.est_total,0);
+  const proj=document.getElementById('project-name').value;
+  const dt=document.getElementById('project-date').value;
+
+  // グループ順に品目を並べる（グループなし品目は最後）
+  const grouped={};
+  const noGroup=[];
+  items.forEach((x,i)=>{
+    const g=(x.group||'').trim();
+    if(g){if(!grouped[g])grouped[g]=[];grouped[g].push({x,i});}
+    else noGroup.push({x,i});
+  });
+
+  const thStyle='padding:7px 8px;font-size:13px;font-weight:700;color:#fff;text-align:right;white-space:nowrap;background:#1e3a6e;border-bottom:2px solid #2563eb';
+  const thStyleL='padding:7px 8px;font-size:13px;font-weight:700;color:#fff;text-align:left;white-space:nowrap;background:#1e3a6e;border-bottom:2px solid #2563eb';
+  const tdBase='padding:7px 8px;font-size:14px;border-bottom:1px solid #f1f5f9;vertical-align:middle';
+  const tdR=tdBase+';text-align:right';
+  const tdL=tdBase+';text-align:left';
+
+  function itemRow(x, i, bg){
+    const r=results[i];
+    const kg=r.weight>0?'¥'+Math.round(r.est_per/r.weight).toLocaleString():'—';
+    const m2=r.area>0?'¥'+Math.round(r.est_per/r.area).toLocaleString():'—';
+    const isActive=i===active&&document.getElementById('summary-panel').classList.contains('open');
+    return `<tr style="background:${isActive?'#eff6ff':bg};cursor:pointer;transition:background .15s" onclick="openSummaryPanel(${i})">
+      <td style="${tdL}">${x.group||''}</td>
+      <td style="${tdL};font-weight:700;color:${isActive?'#1d4ed8':'#1e3a6e'}">${x.name}</td>
+      <td style="${tdL}">${x.material} ${x.thickness}mm</td>
+      <td style="${tdR}">${x.qty}</td>
+      <td style="${tdR}">${yen(r.est_per)}</td>
+      <td style="${tdR};font-weight:700;color:#0f766e">${yen(r.est_total)}</td>
+      <td style="${tdR};color:#475569">${kg}</td>
+      <td style="${tdR};color:#475569">${m2}</td>
+    </tr>`;
+  }
+
+  function subtotalRow(label, total){
+    return `<tr style="background:#ede9fe">
+      <td colspan="5" style="${tdL};font-weight:700;color:#6d28d9;font-size:14px">【${label}】小計</td>
+      <td style="${tdR};font-weight:700;color:#6d28d9;font-size:15px">${yen(total)}</td>
+      <td colspan="2" style="${tdR}"></td>
+    </tr>`;
+  }
+
+  let rows='';
+  Object.entries(grouped).forEach(([g,arr])=>{
+    let gTotal=0;
+    arr.forEach(({x,i},idx)=>{
+      gTotal+=results[i].est_total;
+      rows+=itemRow(x,i,idx%2===0?'#fff':'#f8fafc');
+    });
+    rows+=subtotalRow(g,gTotal);
+  });
+  // グループなし品目
+  noGroup.forEach(({x,i},idx)=>{
+    rows+=itemRow(x,i,idx%2===0?'#fff':'#f8fafc');
+  });
+
+  document.getElementById('summary-body').innerHTML=`
+    <div class="grand-total-card">
+      <div class="lbl">${proj||'見積合計'} ${dt?'（'+dt+'）':''}</div>
+      <div class="val">¥${grand.toLocaleString()}</div>
+    </div>
+    <div style="background:#fff;border-radius:10px;overflow:auto;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:10px">
+      <table style="width:100%;border-collapse:collapse;min-width:640px">
+        <thead>
+          <tr>
+            <th style="${thStyleL};min-width:70px">グループ</th>
+            <th style="${thStyleL};min-width:100px">品名</th>
+            <th style="${thStyleL};min-width:90px">材質・板厚</th>
+            <th style="${thStyle};min-width:50px">数量</th>
+            <th style="${thStyle};min-width:90px">見積単価</th>
+            <th style="${thStyle};min-width:90px">見積合計</th>
+            <th style="${thStyle};min-width:80px">kg単価</th>
+            <th style="${thStyle};min-width:80px">㎡単価</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr style="background:#eff6ff">
+            <td colspan="5" style="${tdL};font-weight:700;color:#1e3a6e;font-size:15px">合　計</td>
+            <td style="${tdR};font-weight:700;color:#0f766e;font-size:17px">${yen(grand)}</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div style="font-size:13px;color:#94a3b8;padding:0 4px 10px">※ 品名をクリックすると右側に入力パネルが開きます　×で閉じる</div>`;
+}
+
+// ===== サマリーパネル開閉 =====
+window.openSummaryPanel=function(i){
+  selectItem(i);
+  const panel=document.getElementById('summary-panel');
+  const body=document.getElementById('summary-panel-body');
+  const title=document.getElementById('summary-panel-title');
+  title.textContent=items[i].name||'品目'+(i+1);
+  // フォームと結果を両方表示
+  body.innerHTML='<div id="sp-form-nav" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none"></div>'
+    +'<div id="sp-form-body"></div>'
+    +'<div style="margin-top:12px;border-top:2px solid #e2e8f0;padding-top:12px" id="sp-result-body"></div>';
+  buildSummaryPanelForm();
+  panel.classList.add('open');
+  buildSummary(); // 選択行ハイライト更新
+};
+window.closeSummaryPanel=function(){
+  document.getElementById('summary-panel').classList.remove('open');
+  buildSummary();
+};
+
+function buildSummaryPanelForm(){
+  // form-navをパネル内に複製
+  const navEl=document.getElementById('sp-form-nav');
+  navEl.innerHTML=SECTIONS.map(s=>
+    `<button style="padding:5px 12px;border-radius:16px;border:1.5px solid ${s.color};background:${openSec===s.id?s.color:'#fff'};color:${openSec===s.id?'#fff':s.color};cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0" onclick="spToggleSec('${s.id}')">${s.label}</button>`
+  ).join('');
+  // フォーム本体はbuildFormと同じ内容をsp-form-bodyへ
+  const tmp=document.getElementById('form-body');
+  buildForm();
+  document.getElementById('sp-form-body').innerHTML=document.getElementById('form-body').innerHTML;
+  // 結果
+  buildResult();
+  document.getElementById('sp-result-body').innerHTML=document.getElementById('result-body').innerHTML;
+}
+window.spToggleSec=function(id){
+  openSec=openSec===id?null:id;
+  buildSummaryPanelForm();
+  buildSummary();
+};
+
+// ===== イベント =====
+window.upd=function(key,val){
+  const numKeys=['width_mm','length_mm','thickness','yield_rate','mat_price','qty','parts_per',
+    'hole1_dia','hole1_cnt','hole2_dia','hole2_cnt','tap_dia','tap_cnt','sara_dia','sara_cnt','long_dia','long_cnt',
+    'bend_L','bend_W','bend_sharp','spot','weld_spot','tigL_pct','weld_tigL','tigX_pct','weld_tigX','arc','weld_arc','bead','weld_bead','mekki','alm_on','clear_on','yojo_on','yaki'];
+  items[active][key]=numKeys.includes(key)?(parseFloat(val)||0):val;
+  buildItemList();buildResult();saveData();
+  if(document.getElementById('summary-panel').classList.contains('open')) buildSummaryPanelForm();
+};
+window.addItem=function(){items.push(def(items.length+1));active=items.length-1;render();navTo('form');};
+window.removeItem=function(i){if(items.length<=1){alert('最後の品目は削除できません');return;}items.splice(i,1);active=Math.min(active,items.length-1);render();saveData();};
+window.copyItem=function(i){const c={...items[i],id:uid++,name:items[i].name+'_copy'};items.splice(i+1,0,c);active=i+1;render();saveData();};
+
+function render(){buildItemList();buildForm();buildResult();}
+loadData();render();
+</script>
+
+<div id="install-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#0f766e;color:#fff;padding:10px 16px;z-index:999;font-size:14px;line-height:1.6;box-shadow:0 2px 8px rgba(0,0,0,.2)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div>
+      <div style="font-weight:700;margin-bottom:2px">📱 ホーム画面に追加できます</div>
+      <div style="opacity:.9">iPhone: 共有ボタン →「ホーム画面に追加」<br>Android: メニュー →「ホーム画面に追加」</div>
+    </div>
+    <button onclick="document.getElementById('install-banner').style.display='none';localStorage.setItem('banner_closed','1')" 
+      style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0 0 0 10px;line-height:1">×</button>
+  </div>
+</div>
+<script>
+if(!localStorage.getItem('banner_closed')){
+  setTimeout(()=>{document.getElementById('install-banner').style.display='block'},1500);
+}
+</script>
+</body>
+</html>
